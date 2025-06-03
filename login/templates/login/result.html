@@ -1,0 +1,40 @@
+{% load static %}
+<html>
+<head>
+    <title>Your Results</title>
+    <link rel="stylesheet" href="{% static 'login/result_style.css' %}">
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Your Results</h1>
+        <p><strong>Score:</strong> {{ correct_count }}/{{ total }} ({{ score }}%)</p><br>
+
+        <h2>Answer Review</h2><br>
+
+        {% if results %}
+            <div style="display: inline-block; text-align: left;">
+                {% for r in results %}
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 10px;">
+                        <h3>Q: {{ r.question }}</h3>
+                        <p>
+                            <strong>Your Answer:</strong>
+                            {% if r.selected_choice == r.correct_answer %}
+                                <span style="color: green;">{{ r.selected_choice }} ✅</span>
+                            {% else %}
+                                <span style="color: red;">{{ r.selected_choice }} ❌</span>
+                                <br>
+                                <strong>Correct Answer:</strong> <span style="color: green;">{{ r.correct_answer }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results to display.</p>
+        {% endif %}
+
+        <br><br>
+        <a href="{% url 'login:dashboard' %}" style="padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px; text-decoration: none;">Go to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="{% static 'login/registration_style.css' %}?v=1">
+</head>
+<body>
+    <div class="form-container">
+        <form method="POST" action="{% url 'login:register' %}" id="registration-form">
+            {% csrf_token %}
+            <h2>Create Account</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {{ form.as_div }}
+            <p class="small-text">Already have an account? <a href="{% url 'login:login' %}">Login here</a></p>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+</body>
+</html>

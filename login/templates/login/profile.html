@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'login/user_data_style.css' %}">
+</head>
+<body>
+    <div class="profile-card">
+        <h1>User Profile</h1>
+        <div class="user-info">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>First Name:</strong> {{ user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+        <button class="back-button" onclick="window.location.href='{% url 'login:dashboard' %}'">Back to Dashboard</button>
+        <button class="back-button" onclick="window.location.href='{% url 'login:update_user_profile' %}'">Update Profile</button>
+    </div>
+</body>
+</html>

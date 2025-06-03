@@ -1,0 +1,22 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DashBoard</title>
+    <link rel="stylesheet" href="{% static 'login/dashboard_style.css' %}">
+
+</head>
+<body>
+    <div style="text-align: center;">    
+        <h1> Welcome back {{ user.username }}.</h1>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <strong>answer questions available <a href="{% url 'login:questions' %}">here</a></strong><br><br>
+    <strong>view your profile <a href="{% url 'login:profile' %}">here</a></strong><br><br>
+    click <a href="{% url 'login:logout' %}">here</a> to logout.
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Questions</title>
+    <link rel="stylesheet" href="{% static 'login/question_style.css' %}">
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Questions</h1>
+    </div>
+    <div style="text-align: center; color: red;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <form method="POST" action="{% url 'login:result' %}">
+        {% csrf_token %}
+        
+        {% if questions %}
+            {% for question in questions %}
+                <div class="question-container">
+                    <div class="question">
+                        <h3>{{ question.text }}</h3>
+                        {% for choice in question.choice_set.all %}
+                            <label class="choice">
+                                <input type="radio" name="question{{ question.id }}" value="{{ choice.id }}">
+                                {{ choice.text }}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                </div><br>
+            {% endfor %}
+        {% else %}
+            <p>No questions available.</p>
+        {% endif %}
+        
+        <div class="button-bar">
+            <button type="button" onclick="window.location.href='{% url 'login:dashboard' %}'" class="back-button">
+                ← Back to Dashboard
+            </button>
+
+            <button type="submit" class="submit-button">
+                Submit Answers →
+            </button>
+        </div>
+    </form>
+</body>
+</html>
