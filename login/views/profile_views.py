@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import never_cache
 
-from ..forms import PasswordResetForm, UsernameForm
+from ..forms import PasswordResetForm, ProfileUpdateForm, UsernameForm
 from ..utils.email_utils import generate_otp, send_email_to_user
 
 
@@ -22,30 +24,32 @@ def profile(request):
     return render(request, "login/profile.html", {"user": user})
 
 
-@login_required(login_url="login:login")
-@never_cache
-def update_user_profile(request):
-    return render(request, "login/update_profile.html")
+@method_decorator(
+    [login_required(login_url="login:login"), never_cache],
+    name="dispatch",
+)
+class UpdateProfileView(View):
+    def get(self, request):
+        form = ProfileUpdateForm()
+        return render(request, "login/update_profile.html", {"form": form})
 
+    def post(self, request):
+        form = ProfileUpdateForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            user = request.user
 
-@login_required(login_url="login:login")
-@never_cache
-def update_profile(request):
-    if request.method != "POST":
-        messages.error(request, "Invalid request method.")
-        return redirect("login:dashboard")
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
 
-    first_name = request.POST.get("first_name")
-    last_name = request.POST.get("last_name")
-
-    user = request.user
-
-    user.first_name = first_name
-    user.last_name = last_name
-    user.save()
-
-    messages.success(request, "Profile updated successfully.")
-    return redirect(reverse("login:dashboard"))
+            messages.success(request, "Profile updated successfully.")
+            return redirect(reverse("login:profile"))
+        else:
+            form = ProfileUpdateForm()
+            messages.error(request, "Error updating profile.")
+        return render(request, "login/update_profile.html", {"form": form})
 
 
 @never_cache
