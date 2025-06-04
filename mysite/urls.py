@@ -21,5 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
     path('login/', include('login.urls')),
-    path('parkinson_model/', include('parkinson_model.urls')),
 ]
