@@ -59,3 +59,16 @@ class PasswordResetForm(forms.Form):
 
 class FileUploadForm(forms.Form):
     file = forms.FileField()
+
+
+class ProfileUpdateForm(forms.Form):
+    first_name = forms.CharField(
+        label="First Name",
+        max_length=30,
+        required=False,
+    )
+    last_name = forms.CharField(
+        label="Last Name",
+        max_length=30,
+        required=False,
+    )
