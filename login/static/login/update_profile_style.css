@@ -1,72 +1,80 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f4f7f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
-    text-align: center;
 }
 
 .profile-container {
-    margin-top: 50px;
-    background: #fff;
-    display: inline-block;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    padding: 40px 50px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 450px;
+    max-width: 90%;
 }
 
 h1 {
-    color: #333;
+    text-align: center;
     margin-bottom: 30px;
+    color: #333;
 }
 
-.form-group {
+form > div {
     margin-bottom: 20px;
-    text-align: left;
 }
 
-.form-group label {
+form label {
     display: block;
-    margin-bottom: 5px;
-    color: #555;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
 }
 
-.form-group input {
-    width: 300px;
-    padding: 10px;
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
 .button-bar {
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
+    margin-top: 25px;
 }
 
-.save-button, .back-button {
-    padding: 10px 20px;
-    font-size: 16px;
+.back-button,
+.save-button {
+    padding: 10px 18px;
     border: none;
     border-radius: 8px;
+    font-size: 15px;
     cursor: pointer;
-    width: 45%;
+    transition: background-color 0.3s ease;
+}
+
+.back-button {
+    background-color: #999;
+    color: #fff;
+}
+
+.back-button:hover {
+    background-color: #7a7a7a;
 }
 
 .save-button {
-    background-color: #4CAF50;
+    background-color: #4a90e2;
     color: white;
 }
 
 .save-button:hover {
-    background-color: #45a049;
-}
-
-.back-button {
-    background-color: #007BFF;
-    color: white;
-}
-
-.back-button:hover {
-    background-color: #0056b3;
+    background-color: #357abd;
 }
