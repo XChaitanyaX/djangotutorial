@@ -33,7 +33,6 @@ ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS").split(",")]
 # Application definition
 
 INSTALLED_APPS = [
-    "parkinson_model.apps.ParkinsonModelConfig",
     "login.apps.AuthConfig",
     "polls.apps.PollsConfig",
     "django.contrib.admin",

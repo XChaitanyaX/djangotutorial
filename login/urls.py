@@ -11,15 +11,12 @@ urlpatterns = [
     path("dashboard/", profile_views.dashboard, name="dashboard"),
     path("profile/", profile_views.profile, name="profile"),
     path(
-        "update_profile/", profile_views.update_profile, name="update_profile"
-    ),
-    path(
         "reset_password/", profile_views.reset_password, name="reset_password"
     ),
     path(
-        "update_user_profile/",
-        profile_views.update_user_profile,
-        name="update_user_profile",
+        "update_profile/",
+        profile_views.UpdateProfileView.as_view(),
+        name="update_profile",
     ),
     path("verify_otp/", profile_views.verify_otp, name="verify_otp"),
     path("questions/", quiz_views.questions, name="questions"),

@@ -9,6 +9,11 @@
 <body>
     <div class="profile-card">
         <h1>User Profile</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
         <div class="user-info">
             <p><strong>Username:</strong> {{ user.username }}</p>
             <p><strong>First Name:</strong> {{ user.first_name }}</p>
@@ -16,7 +21,7 @@
             <p><strong>Email:</strong> {{ user.email }}</p>
         </div>
         <button class="back-button" onclick="window.location.href='{% url 'login:dashboard' %}'">Back to Dashboard</button>
-        <button class="back-button" onclick="window.location.href='{% url 'login:update_user_profile' %}'">Update Profile</button>
+        <button class="back-button" onclick="window.location.href='{% url 'login:update_profile' %}'">Update Profile</button>
     </div>
 </body>
 </html>

@@ -3,6 +3,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 
+<<<<<<< HEAD
 class AuthViewTests(TestCase):
     def setUp(self):
         self.username = "testuser"
@@ -32,9 +33,30 @@ class AuthViewTests(TestCase):
                 "password": self.password,
                 "csrfmiddlewaretoken": self.get_csrf(self.login_url),
             },
-        )
-        self.assertRedirects(response, reverse("login:dashboard"))
+=======
 
+class LoginTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+            email=EMAIL_HOST_USER,
+            first_name="Test",
+            last_name="User",
+        )
+
+    def test_valid_credentials(self):
+        """
+        Test that a user can log in with valid credentials.
+        """
+        is_valid_cred = self.client.login(
+            username="testuser", password="testpassword"
+>>>>>>> 8b42987c325364c9574c556d8de3490eadb31b80
+        )
+        self.assertTrue(is_valid_cred)
+
+<<<<<<< HEAD
     def test_login_invalid(self):
         response = self.client.post(
             self.login_url,
@@ -346,3 +368,8 @@ class ProfileViewTests(TestCase):
         self.assertRedirects(response, self.login_url)
         user = User.objects.get(username=self.username)
         self.assertTrue(user.check_password("newpass"))
+=======
+    def test_invalid_credentials(self):
+        is_valid_cred = self.client.login(username="user", password="password")
+        self.assertFalse(is_valid_cred)
+>>>>>>> 8b42987c325364c9574c556d8de3490eadb31b80
