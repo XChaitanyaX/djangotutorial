@@ -16,3 +16,4 @@ login/management/commands/add_question.py
 svm_model.pkl
 .pytest_cache/
 .ruff_cache/
+.coverage
