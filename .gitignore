@@ -16,5 +16,8 @@ login/management/commands/add_question.py
 svm_model.pkl
 .pytest_cache/
 .ruff_cache/
+<<<<<<< HEAD
+=======
 .python-version
+>>>>>>> 8b42987c325364c9574c556d8de3490eadb31b80
 .coverage
