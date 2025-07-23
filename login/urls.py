@@ -19,7 +19,7 @@ urlpatterns = [
         name="update_profile",
     ),
     path("verify_otp/", profile_views.verify_otp, name="verify_otp"),
-    path("questions/", quiz_views.questions, name="questions"),
+    path("questions/", quiz_views.Questions.as_view(), name="questions"),
     path("result/", quiz_views.result, name="result"),
     path("file_upload/", file_views.file_upload, name="file_upload"),
 ]

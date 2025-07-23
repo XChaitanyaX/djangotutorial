@@ -72,3 +72,19 @@ class ProfileUpdateForm(forms.Form):
         max_length=30,
         required=False,
     )
+
+
+class QuestionForm(forms.Form):
+    def __init__(self, questions, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for question in questions:
+            choices = [
+                (choice.id, choice.text)
+                for choice in question.choice_set.all()
+            ]
+            self.fields[f"question_{question.id}"] = forms.ChoiceField(
+                label=question.text,
+                choices=choices,
+                widget=forms.RadioSelect,
+                required=True,
+            )
