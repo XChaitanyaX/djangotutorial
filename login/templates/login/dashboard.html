@@ -15,7 +15,7 @@
             <div class="message {{ message.tags }}">{{ message }}</div>
         {% endfor %}
     {% endif %}
-    <strong>answer questions available <a href="{% url 'login:questions' %}">here</a></strong><br><br>
+    <strong>answer questions available <a href="{% url 'login:quiz_list' %}">here</a></strong><br><br>
     <strong>view your profile <a href="{% url 'login:profile' %}">here</a></strong><br><br>
     click <a href="{% url 'login:logout' %}">here</a> to logout.
 </body>
