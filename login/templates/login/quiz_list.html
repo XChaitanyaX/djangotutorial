@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{% static 'login/quiz_list_style.css' %}">
+</head>
+<body>
+    <h1>Quiz List</h1>
+    <ul>
+        {% for quiz in quizzes %}
+            <div class="quiz-card">
+                <h2>{{ quiz.name }}</h2>
+
+                <p><strong>Start Time:</strong> {{ quiz.start_time }}</p>
+                <p><strong>End Time:</strong> {{ quiz.end_time }}</p>
+
+                <div class="button-container">
+                    <button class="quiz-button" onclick="location.href='{% url 'login:questions' quiz.id %}'">Start Quiz</button>
+                    <button class="quiz-button secondary" onclick="location.href='{% url 'login:result' quiz.id %}'">View Results</button>
+                </div>
+            </div>
+        {% empty %}
+            <li class="no-quizzes">No quizzes available.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
