@@ -7,23 +7,18 @@ from django.views import View
 from django.views.decorators.cache import never_cache
 
 from login.forms import QuestionForm
-from login.models import Answer, Choice, Question
+from login.models import Answer, Choice, Question, Quiz, QuizSubmission
 
 
 @method_decorator([login_required], name="dispatch")
 class Questions(View):
-    def _get_paginated_questions(self, request, page_number):
+    def _get_paginated_questions(self, page_number, quiz_id):
         """Helper method to set up paginator and return page object"""
-        # Get IDs of questions the user has already answered
-        answered = Answer.objects.filter(user=request.user).values_list(
-            "question_id", flat=True
-        )
-        # Exclude answered questions
-        questions = Question.objects.exclude(id__in=answered)
+        questions = Quiz.objects.get(id=quiz_id).questions.all()
         self.paginator = Paginator(questions, 2)
         return self.paginator.get_page(page_number)
 
-    def _render_questions(self, request, page_obj, form=None):
+    def _render_questions(self, request, page_obj, quiz_id, form=None):
         """Helper method to render the questions template"""
         if form is None:
             form = QuestionForm(questions=page_obj.object_list)
@@ -34,12 +29,13 @@ class Questions(View):
             {
                 "page_obj": page_obj,
                 "form": form,
+                "quiz_id": quiz_id,
             },
         )
 
-    def get(self, request):
+    def get(self, request, quiz_id):
         page_number = request.GET.get("page", 1)
-        page_obj = self._get_paginated_questions(request, page_number)
+        page_obj = self._get_paginated_questions(page_number, quiz_id)
         if not page_obj.object_list:
             messages.info(
                 request,
@@ -48,9 +44,9 @@ class Questions(View):
             )
             return redirect("login:dashboard")
         request.session["answers"] = {}
-        return self._render_questions(request, page_obj)
+        return self._render_questions(request, page_obj, quiz_id)
 
-    def post(self, request):
+    def post(self, request, quiz_id):
         # Store current page answers in session
         if "answers" not in request.session:
             request.session["answers"] = {}
@@ -63,10 +59,13 @@ class Questions(View):
         request.session.modified = True
 
         if len(request.session["answers"]) == len(Question.objects.all()):
-            print(f"{request.session['answers']}")
+            submission = QuizSubmission.objects.create(
+                user=request.user,
+                quiz_id=quiz_id,
+            )
             Answer.objects.bulk_create(
                 Answer(
-                    user=request.user,
+                    submission=submission,
                     question=Question.objects.get(
                         id=int(q_id.replace("question_", ""))
                     ),
@@ -76,54 +75,46 @@ class Questions(View):
                 )
                 for q_id, choice_id in request.session["answers"].items()
             )
-            print(f"All questions answered: {request.session['answers']}")
+            request.session.pop("answers", None)
             return redirect("login:dashboard")
 
         # Initialize paginator for POST requests
         page_number = request.POST.get("page", 1)
-        page_obj = self._get_paginated_questions(request, page_number)
+        page_obj = self._get_paginated_questions(page_number, quiz_id)
 
         # Initialize form with the current page's questions
         form = QuestionForm(questions=page_obj.object_list)
-        return self._render_questions(request, page_obj, form)
+        return self._render_questions(request, page_obj, quiz_id, form)
 
 
 @login_required(login_url="login:login")
 @never_cache
-def result(request):
-    if request.method != "POST":
-        return redirect("login:questions")
+def result(request, quiz_id):
+    if request.method != "GET":
+        return redirect("login:dashboard")
 
     total = 0
     correct_count = 0
     results = []
 
     correct_answers = {
-        a.question_id: a.answer_choice_id
-        for a in Answer.objects.filter(user=None)
+        choice.question.id: choice.id
+        for choice in Choice.objects.filter(is_correct=True)
     }
 
-    already_answered = Answer.objects.filter(user=request.user).values_list(
-        "question_id", flat=True
-    )
-    unanswered_questions = Question.objects.exclude(id__in=already_answered)
+    quiz = Quiz.objects.get(id=quiz_id)
+    questions = quiz.questions.all()
 
-    for question in unanswered_questions:
-        selected_choice_id = request.POST.get(f"question{question.id}")
-        if not selected_choice_id:
-            messages.error(request, "Please answer all questions.")
-            return redirect("login:questions")
-
+    submission = QuizSubmission.objects.get(user=request.user, quiz=quiz)
+    for question in questions:
+        selected_choice_id = (
+            submission.answers.filter(question=question)
+            .values_list("answer_choice", flat=True)
+            .first()
+        )
         try:
             selected_choice = Choice.objects.get(id=selected_choice_id)
             correct_choice_id = correct_answers.get(question.id)
-
-            # Save the user's answer
-            Answer.objects.create(
-                user=request.user,
-                question=question,
-                answer_choice=selected_choice,
-            )
 
             is_correct = selected_choice.id == correct_choice_id
             if is_correct:
@@ -157,3 +148,10 @@ def result(request):
             "results": results,
         },
     )
+
+
+@login_required(login_url="login:login")
+def quiz_list(request):
+    """View to list all quizzes"""
+    quizzes = Quiz.objects.all().order_by("-created_at")
+    return render(request, "login/quiz_list.html", {"quizzes": quizzes})
